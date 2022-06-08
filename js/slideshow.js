@@ -1,11 +1,12 @@
 // REWRITTEN TO TAKE ADVANTAGE OF CLOSURES
-const $ = (id) => {
+const $ = function (id) {
     return document.getElementById(id);
 };
 
 const createSlideshow = function () {
     // PRIVATE VARIABLES AND FUNCTIONS
     let timer;
+    let speed = 2000;
     let play = true;
     
     let nodes = { image: null, caption: null };
@@ -15,7 +16,7 @@ const createSlideshow = function () {
         clearInterval(timer);
     };
     const displayNextImage = function () {
-        if (img.counter === img.cache.length) {
+        if (img.counter === img.cache.length -1) {
             img.counter = 0;
         } else {
             img.counter += 1;
@@ -33,6 +34,13 @@ const createSlideshow = function () {
     };
     // PUBLIC METHODS THAT HAVE ACCESS TO PRIVATE VARIABLES AND FUNCTIONS
     return {
+        getSpeed: function () {
+            return speed;
+        },
+        setSpeed: function (promptSpeed) {
+            speed = promptSpeed;
+            return this;
+        },
         loadImages: function (slides) {
             var image;
             for (let i = 0; i < slides.length; i++) {
@@ -47,6 +55,9 @@ const createSlideshow = function () {
             if (arguments.length === 2) {
                 nodes.image = arguments[0];
                 nodes.caption = arguments[1];
+            }
+            if (timer) {
+                stopSlideShow();
             }
             timer = setInterval(displayNextImage, 2000);
             return this;
@@ -85,4 +96,14 @@ window.addEventListener('load', () => {
     slideshow.loadImages(slides).startSlideShow($('image'), $('caption'));
     // PAUSE THE SLIDESHOW
     $('play_pause').onclick = slideshow.createToggleHandler();
+
+    $('speed').addEventListener('click', () => {
+        let promptSpeed = parseInt(prompt('The current speed is ' + slideshow.getSpeed() + ' milliseconds. Please enter new speed'), 10);
+
+        if (promptSpeed < 0 || isNaN(promptSpeed)) {
+            prompt('Please enter a valid value for speed');
+            return false;
+        }
+        slideshow.setSpeed(promptSpeed).startSlideShow();
+    })
 });
