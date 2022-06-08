@@ -1,5 +1,5 @@
 // REWRITTEN TO TAKE ADVANTAGE OF CLOSURES
-const $ = function (id) {
+const $ =  function (id) {
     return document.getElementById(id);
 };
 
@@ -43,7 +43,7 @@ const createSlideshow = function () {
         },
         loadImages: function (slides) {
             var image;
-            for (let i = 0; i < slides.length; i++) {
+            for (let i = 0; i < slides.length; i+=1) {
                 image = new Image();
                 image.src = slides[i].href;
                 image.title = slides[i].title;
@@ -59,7 +59,7 @@ const createSlideshow = function () {
             if (timer) {
                 stopSlideShow();
             }
-            timer = setInterval(displayNextImage, 2000);
+            timer = setInterval(displayNextImage, speed);
             return this;
         },
         createToggleHandler: function () {
@@ -84,7 +84,7 @@ const createSlideshow = function () {
 // CREATE THE SLIDESHOW OBJECT
 const slideshow = createSlideshow();
 
-window.addEventListener('load', () => {
+window.addEventListener('load', function () {
     const slides = [
         {href: 'images/backpack.jpg', title: 'He backpacks in the Sierras often'},
         {href: 'images/boat.jpg', title: 'He loves his boat'},
@@ -101,9 +101,9 @@ window.addEventListener('load', () => {
         let promptSpeed = parseInt(prompt('The current speed is ' + slideshow.getSpeed() + ' milliseconds. Please enter new speed'), 10);
 
         if (promptSpeed < 0 || isNaN(promptSpeed)) {
-            prompt('Please enter a valid value for speed');
+            prompt('Please enter a valid value fpr speed');
             return false;
         }
         slideshow.setSpeed(promptSpeed).startSlideShow();
-    })
+    });
 });
